@@ -1,7 +1,7 @@
 import codecs
-
-dictionary = ['Α', 'Β', 'Γ', 'Δ', 'Ε', 'Ζ', 'Η', 'Θ', 'Ι', 'Κ', 'Λ', 'Μ', 'Ν', 'Ξ', 'Ο', 'Π', 'Ρ', 'Σ',
-              'Τ', 'Υ', 'Φ', 'Χ', 'Ψ', 'Ω']
+# -*- coding: utf-8 -*-
+dictionary = [u'Α', u'Β', u'Γ', u'Δ', u'Ε', u'Ζ', u'Η', u'Θ', u'Ι', u'Κ', u'Λ', u'Μ', u'Ν', u'Ξ', u'Ο', u'Π', u'Ρ', u'Σ',
+              u'Τ', u'Υ', u'Φ', u'Χ', u'Ψ', u'Ω']
 
 def encode(string):
     coded_text = []
@@ -23,8 +23,3 @@ print(newstring)
 for i in range(24):
     temp = [(x+i)%24 for x in newstring]#permutation list
     print(''.join(decode(temp)))
-
-
-
-
-
