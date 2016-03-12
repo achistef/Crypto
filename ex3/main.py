@@ -15,38 +15,35 @@ def decode(list):
     return decoded_text
 
 def Friedman(newstring):
-	k = 7
+	k = 2
 	found = 0
-	while found == 0:
+	mean_values = []
+	while k < 20:#a random key size
 		rows = len(newstring)/k
 		columns = k
-	    temp = [[0 for x in range(columns)] for x in range(rows)]
+		temp = [[0 for x in range(columns)] for x in range(rows)]
 
 		for i in range (rows):
 			for j in range(columns):
-                temp[i][j] = newstring[(i*k)+j]
+				temp[i][j] = newstring[(i*k)+j]
 
 
-        axi = 0
+		summary = 0.0
 		for i in range (k):
-            axi = axi + IC(column(temp,i))
-			#if IC(column(temp,i)) - 0.067 < 0.05:
-				#found = 1
-				#return k
+			summary = summary + IC(column(temp,i))
 
-        print(axi/columns)
+		mean_values.append(summary/columns)
 		k = k+1
-		found = 1
-    return k
+	return mean_values.index(max(mean_values)) + 2
 
 def IC(column):
 	n = 26
 	k = len(column)
-    sum = 0.0
-    for i in range(26):
-        x = column.count(i)
-        sum = sum + (double(x*(x-1)/k*(k-1))
-    return sum
+	summary = 0.0
+	for i in range(26):
+		x = column.count(i)
+		summary = summary + x*(x-1)/float(k*(k-1))
+	return summary
 
 def column(matrix, i):
     return [row[i] for row in matrix]
@@ -58,3 +55,4 @@ string = file.read()
 newstring = encode(string)
 
 k = Friedman(newstring)
+print(k)
