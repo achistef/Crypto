@@ -14,7 +14,6 @@ encryption = "$6$" + str(salt) + "$"
 for i in range(1,1000000):
 	x = '{0:06d}'.format(i) 
 	encrypted = crypt.crypt(x,encryption)
-	print(i)
 	if encrypted == password :
 		print("Password: " + str(i))
 		break
