@@ -92,14 +92,13 @@ for i in range(0,1024):
 	if enabled == 0:
 		print(message + "	:	" + str(i))
 	else:
-		pass
-        if "(" not in message:
-                if")" not in message:
-                        if"?" not in message:
-                                if"!" not in message:
-                                        if"." not in message:
-                                                if"-" not in message:
-                                                        print(message + "	:	" + str(i))
+		if "(" not in message:
+			if ")" not in message:
+				if"?" not in message:
+					if"!" not in message:
+						if"." not in message:
+							if"-" not in message:
+								print(message + "	:	" + str(i))
 
 file.close()
 #==========================================================================================================
