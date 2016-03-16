@@ -72,6 +72,9 @@ def lfsr(seed,feedback,bits, flag):
             print('state', i+1, 'of the lfsr :',seed)
     return output
 
+#PART 1
+enabled = 0 # turn into 1 in order to short printed messages.
+
 file = open('lfsr1.txt','r')
 feedback = [0,0,0,0,0,1,1,0,1,1]
 
@@ -86,20 +89,21 @@ for i in range(0,1024):
 	out = ''.join(str(n) for n in out_list)
 	bin_message = string_xor(text_encoded,out)
 	message = text_dec(bin_message)
+	if enabled == 0:
+		print(message + "	:	" + str(i))
+	else:
+		pass
         if "(" not in message:
                 if")" not in message:
                         if"?" not in message:
                                 if"!" not in message:
                                         if"." not in message:
                                                 if"-" not in message:
-                                                        print(message)
+                                                        print(message + "	:	" + str(i))
 
+file.close()
+#==========================================================================================================
+#PART 2
+file = open('lfsr2.txt','r')
 
-
-
-
-
-
-
-
-	
+new_text_encoded = text_enc(file.read()[1:-1])
