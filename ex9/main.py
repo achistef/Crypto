@@ -73,7 +73,7 @@ def lfsr(seed,feedback,bits, flag):
     return output
 
 #PART 1
-enabled = 0 # turn into 1 in order to short printed messages.
+enabled = 1 # turn into 1 in order to short printed messages.
 
 file = open('lfsr1.txt','r')
 feedback = [0,0,0,0,0,1,1,0,1,1]
@@ -81,12 +81,14 @@ feedback = [0,0,0,0,0,1,1,0,1,1]
 text_encoded = text_enc(file.read()[1:-1])
 
 for i in range(0,1024):
-        new_list = list(feedback)
+	new_list = list(feedback)
+
 	x = list('{0:010b}'.format(i))#generate all binary combinations and put them in a lis
 	x = [int(item) for item in x]#turn strings to integers
-	out_list = lfsr(x,new_list,len(text_encoded),1)#do not return internal states
-        
+
+	out_list = lfsr(x,new_list,len(text_encoded),1)#do not return internal states    
 	out = ''.join(str(n) for n in out_list)
+
 	bin_message = string_xor(text_encoded,out)
 	message = text_dec(bin_message)
 	if enabled == 0:
@@ -103,6 +105,49 @@ for i in range(0,1024):
 file.close()
 #==========================================================================================================
 #PART 2
+print("====================================================")
+print("Part 2")
 file = open('lfsr2.txt','r')
+feedback1 = [0,0,0,0,0,1,1,0,1,1]
+feedback2 = [0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,1]
 
 new_text_encoded = text_enc(file.read()[1:-1])
+
+for i in range(0,1024):
+	for j in range(0,65536):
+		new_list1 = list(feedback1)
+		new_list2 = list(feedback2)
+
+		x1 = list('{0:010b}'.format(i))
+		x2 = list('{0:016b}'.format(j))
+		x1 = [int(item) for item in x1]
+		x2 = [int(item) for item in x2]
+
+		out_list1 = lfsr(x1,new_list1,len(new_text_encoded),1)
+		out_list2 = lfsr(x2,new_list2,len(new_text_encoded),1)
+		out1 = ''.join(str(n) for n in out_list1)
+		out2 = ''.join(str(n) for n in out_list2)
+
+		result = string_xor(out1,out2)
+		new_bin_message = string_xor(new_text_encoded,result)
+		new_message = text_dec(new_bin_message)
+		if enabled == 0:
+			print(message + "	:	" + str(i))
+		else:
+			if "(" not in message:
+				if ")" not in message:
+					if"?" not in message:
+						if"!" not in message:
+							if"." not in message:
+								if"-" not in message:
+									print(message + "	:	" + str(i))
+
+
+
+
+
+
+
+
+
+
