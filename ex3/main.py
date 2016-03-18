@@ -2,6 +2,9 @@
 dictionary = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
               'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
+frequencies = ['E', 'T', 'A', 'O', 'I', 'N', 'S', 'R', 'H', 'D', 'L', 'U','C', 'M', 'F', 'Y', 'W', 'G',
+				'P', 'B', 'V', 'K', 'X', 'Q', 'J', 'Z']
+
 def encode(string):
     coded_text = []
     for letter in string:
@@ -23,7 +26,7 @@ def Friedman(newstring):
 		columns = k
 		temp = [[0 for x in range(columns)] for x in range(rows)]
 
-		for i in range (rows):
+		for i in range(rows):
 			for j in range(columns):
 				temp[i][j] = newstring[(i*k)+j]
 
@@ -36,12 +39,12 @@ def Friedman(newstring):
 		k = k+1
 	return mean_values.index(max(mean_values)) + 2
 
-def IC(column):
+def IC(aColumn):
 	n = 26
-	k = len(column)
+	k = len(aColumn)
 	summary = 0.0
 	for i in range(26):
-		x = column.count(i)
+		x = aColumn.count(i)
 		summary = summary + x*(x-1)/float(k*(k-1))
 	return summary
 
@@ -54,5 +57,39 @@ string = file.read()
 
 newstring = encode(string)
 
-k = Friedman(newstring)
-print(k)
+key_length = Friedman(newstring)
+
+row_size = (len(string)/key_length)
+sets = [[0 for x in range(key_length)] for i in range(row_size)]
+
+k = 0
+for x in range(row_size):
+	for i in range(key_length):
+		sets[x][i] = newstring[k]
+		k += 1
+
+shift=[]
+for i in range(key_length):
+	col = column(sets,i)
+	counts = [0 for x in range(26)]	 
+	for j in col:
+		counts[j] += 1
+	maximum = counts.index(max(counts))
+	temp = maximum - dictionary.index(frequencies[0])
+	if  temp < 0 :
+		shift.append(temp + 26)
+	else:
+		shift.append(temp)
+
+
+real_string_num = []
+for i in range(len(newstring)):
+	temp_i = newstring[i] - shift[i%key_length]
+	if temp_i < 0:
+		real_string_num.append(temp_i + 26)
+	else:
+		real_string_num.append(temp_i)
+real_key = decode(shift)
+real_string = decode(real_string_num)
+print("Key:" + ''.join(real_key))
+print (''.join(real_string))
