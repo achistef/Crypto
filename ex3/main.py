@@ -23,6 +23,7 @@ def Friedman(newstring):
 	mean_values = []
 	while k < 20:#a random key size
 		rows = len(newstring)/k
+		rows = int(rows)
 		columns = k
 		temp = [[0 for x in range(columns)] for x in range(rows)]
 
@@ -59,7 +60,8 @@ newstring = encode(string)
 
 key_length = Friedman(newstring)
 
-row_size = (len(string)/key_length)
+row_size = len(string)/key_length
+row_size = int(row_size)
 sets = [[0 for x in range(key_length)] for i in range(row_size)]
 
 k = 0
