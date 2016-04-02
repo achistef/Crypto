@@ -11,7 +11,7 @@ obj2 = AES.new(key,AES.MODE_CBC,"WorksLikeACharm!")
 encryptedtext1=obj2.encrypt(message)
 
 def flip(message):
-	m1 = binascii.hexlify(message)
+	m1 = binascii.hexlify(bytes(message,'UTF-8'))#bytes method for python3 compatibility
 	m2 = bin(int(m1, 16))[2:]
 	#change random bit
 	random = randint(0,len(m2)-1)
