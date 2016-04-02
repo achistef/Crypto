@@ -55,10 +55,6 @@ string2 = '!c.)'
 string2_encoded = lfsr_project.text_enc(string2)
 
 xored = lfsr_project.string_xor(string1_encoded,string2_encoded)
-xored = [int(item) for item in xored]
-
-internal_state = xored[::-1]
-internal_state = ''.join(str(n) for n in internal_state)
 
 for i in range(1024):
 	tf1 = list(feedback1)
@@ -72,13 +68,13 @@ for i in range(1024):
 
 	#find big lfsr's stream
 	out = ''.join(str(n) for n in out_list)
-	bin_big_out = lfsr_project.string_xor(internal_state,out)
-	bin_big_out_cropped = bin_big_out[::-1]
-	bin_big_out_cropped = [int(item) for item in list(bin_big_out[-16:])]
+	bin_big_out = lfsr_project.string_xor(xored,out)
+	big_internal_state = bin_big_out[::-1]
+	big_internal_state = [int(item) for item in list(big_internal_state[:16])]
 
 	#find seed for big lfsr
 	tf2 = list(feedback2)
-	seed = lfsr_project.lfsr(bin_big_out_cropped,tf2,65537,1)#65536 is 2^16 = period + 2 because 2 seed bits are contained in bin big cropped
+	seed = lfsr_project.lfsr(big_internal_state,tf2,65541,1)#65536 is 2^16 = period + 6 because 6 seed bits are contained in big_internal_state
 	seed = seed[-16:]
 	seed = seed[::-1]
 
@@ -91,7 +87,7 @@ for i in range(1024):
 
 	temp_xor = lfsr_project.string_xor(temp1,temp2)
 	print(temp_xor[10:30])
-	print(internal_state)
+	print(xored)
 	print("\n")
 	bin_message = lfsr_project.string_xor(text_encoded,temp_xor)
 	message = lfsr_project.text_dec(bin_message)
