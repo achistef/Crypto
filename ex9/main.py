@@ -33,6 +33,7 @@ binary_message = lfsr_project.string_xor(out,text_encoded)
 message = lfsr_project.text_dec(binary_message)
 
 print(message)
+print("======================\n")
 
 myFile.close()
 
@@ -62,21 +63,26 @@ internal_state = ''.join(str(n) for n in internal_state)
 for i in range(1024):
 	tf1 = list(feedback1)
 
-	small_out = list('{0:010b}'.format(i))
+	#generate random seed for small lfsr
+	small_out = list('{0:010b}'.format(i))#generate binary number with given i
 	small_out = [int(item) for item in small_out]#turn strings to integers
 
-	out_list = lfsr_project.lfsr(small_out,tf1,len(text_encoded),1)#do not return internal state
-	out_list = out_list[10:30]
+	out_list = lfsr_project.lfsr(small_out,tf1,30,1)#do not return internal state
+	out_list = out_list[-20:]#keep last 20 bits of small lfsr
 
+	#find big lfsr's stream
 	out = ''.join(str(n) for n in out_list)
 	bin_big_out = lfsr_project.string_xor(internal_state,out)
-	bin_big_out = [int(item) for item in list(bin_big_out[0:16])]
+	bin_big_out_cropped = bin_big_out[::-1]
+	bin_big_out_cropped = [int(item) for item in list(bin_big_out[-16:])]
 
+	#find seed for big lfsr
 	tf2 = list(feedback2)
-	seed = lfsr_project.lfsr(bin_big_out,tf2,65535,1)#65536 is 2^16 = period
-	seed = seed[-16:]#Period is 2^16 . seed is located at 65519-65535
+	seed = lfsr_project.lfsr(bin_big_out_cropped,tf2,65537,1)#65536 is 2^16 = period + 2 because 2 seed bits are contained in bin big cropped
+	seed = seed[-16:]
 	seed = seed[::-1]
 
+	#find the decrypted text executing lfsr process
 	tf1 = list(feedback1)
 	temp1 = lfsr_project.lfsr(small_out,tf1,len(text_encoded),1)
 
@@ -84,9 +90,13 @@ for i in range(1024):
 	temp2 = lfsr_project.lfsr(seed,tf2,len(text_encoded),1)
 
 	temp_xor = lfsr_project.string_xor(temp1,temp2)
+	print(temp_xor[10:30])
+	print(internal_state)
+	print("\n")
 	bin_message = lfsr_project.string_xor(text_encoded,temp_xor)
 	message = lfsr_project.text_dec(bin_message)
 
+	#prune messages
 	if "(" not in message:
 		if ")" not in message:
 			if "?" not in message:
@@ -95,3 +105,4 @@ for i in range(1024):
 						if "-" not in message:
 							print (message)
 
+myFile.close()
