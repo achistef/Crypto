@@ -41,7 +41,7 @@ myFile.close()
 
 myFile = open('lfsr2.txt', 'r')
 
-feedback2 = [0,1,1,0,0,0,1,1,0,0,0,0,0,0,0,1]
+feedback2 = [0,1,1,0,0,1,1,1,0,0,0,0,0,0,0,1]
 
 
 tf2 = list(feedback2)
@@ -69,14 +69,19 @@ for i in range(1024):
 	#find big lfsr's stream
 	out = ''.join(str(n) for n in out_list)
 	bin_big_out = lfsr_project.string_xor(xored,out)
-	big_internal_state = bin_big_out[::-1]
-	big_internal_state = [int(item) for item in list(big_internal_state[:16])]
+	bis = [int(item) for item in list(bin_big_out[:16])]#big internal state
 
-	#find seed for big lfsr
-	tf2 = list(feedback2)
-	seed = lfsr_project.lfsr(big_internal_state,tf2,65541,1)#65536 is 2^16 = period + 6 because 6 seed bits are contained in big_internal_state
-	seed = seed[-16:]
-	seed = seed[::-1]
+	#find seed for big lfsr through inverse lfsr method
+	bis = bis[::-1]
+	for i in range(10):		
+		val = bis[0]
+		for i in range(15):
+			bis[i] = bis[i+1]#shift one left
+		temp_list = [bis[1]] + [bis[2]] + [bis[5]] + [bis[6]] + [bis[7]] + [val]
+		found = lfsr_project.sumxor(temp_list)			
+		bis[15] = found #put found element in list
+
+	seed = bis
 
 	#find the decrypted text executing lfsr process
 	tf1 = list(feedback1)
@@ -86,12 +91,21 @@ for i in range(1024):
 	temp2 = lfsr_project.lfsr(seed,tf2,len(text_encoded),1)
 
 	temp_xor = lfsr_project.string_xor(temp1,temp2)
-	print(temp_xor[10:30])
-	print(xored)
-	print("\n")
 	bin_message = lfsr_project.string_xor(text_encoded,temp_xor)
 	message = lfsr_project.text_dec(bin_message)
 
+	#check if the last 20 bits are equal
+	tf2 = list(feedback2)
+	temp = lfsr_project.lfsr(seed,tf2,30,1)
+	c = 0
+	for i in range(20):
+		if temp[10+i] == bin_big_out[i]:
+			c += 1
+	if c == 20:
+		print(message)		
+
+	if "ways" in message:
+		print(message)
 	#prune messages
 	if "(" not in message:
 		if ")" not in message:
