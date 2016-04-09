@@ -69,7 +69,7 @@ for i in range(1024):
 	#find big lfsr's stream
 	out = ''.join(str(n) for n in out_list)
 	bin_big_out = lfsr_project.string_xor(xored,out)
-	bis = [int(item) for item in list(bin_big_out[:16])]#big internal state
+	bis = [int(item) for item in list(bin_big_out[:16])]#big internal state. We care only for the first 16 bits
 
 	#find seed for big lfsr through inverse lfsr method
 	bis = bis[::-1]
@@ -106,13 +106,6 @@ for i in range(1024):
 
 	if "ways" in message:
 		print(message)
-	#prune messages
-	if "(" not in message:
-		if ")" not in message:
-			if "?" not in message:
-				if "!" not in message:
-					if "." not in message:
-						if "-" not in message:
-							print (message)
+
 
 myFile.close()
