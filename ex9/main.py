@@ -78,7 +78,7 @@ for i in range(1024):
 		for i in range(15):
 			bis[i] = bis[i+1]#shift one left
 		temp_list = [bis[1]] + [bis[2]] + [bis[5]] + [bis[6]] + [bis[7]] + [val]
-		found = lfsr_project.sumxor(temp_list)			
+		found = lfsr_project.sumxor(temp_list)		
 		bis[15] = found #put found element in list
 
 	seed = bis
@@ -92,18 +92,10 @@ for i in range(1024):
 
 	temp_xor = lfsr_project.string_xor(temp1,temp2)
 	bin_message = lfsr_project.string_xor(text_encoded,temp_xor)
-	message = lfsr_project.text_dec(bin_message)
+	message = lfsr_project.text_dec(bin_message)	
 
-	#check if the last 20 bits are equal
-	tf2 = list(feedback2)
-	temp = lfsr_project.lfsr(seed,tf2,30,1)
-	c = 0
-	for i in range(20):
-		if temp[10+i] == bin_big_out[i]:
-			c += 1
-	if c == 20:
-		print(message)		
-
+	#"ways" matches the already known 20 bits of the xor between the given plaintext 
+	#and the corresponding ciphertext
 	if "ways" in message:
 		print(message)
 
